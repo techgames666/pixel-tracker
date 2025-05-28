@@ -4,6 +4,11 @@ import time
 
 app = Flask(__name__)
 
+@app.route('/')
+def home():
+    return '🚀 Seu app está funcionando no Render!'
+
+
 # ⚙️ Dados do seu Pixel (substitua pelos seus dados)
 PIXEL_ID = '670749832539557'  # Exemplo: '123456789012345'
 ACCESS_TOKEN = 'EAAYzzRkeKZAoBO9OghX47kcCTzBEfu1SQZCIoU3BBxUwZC0MYTeJGVvYlmwXF7bByJX30ZBRgRPSXzSINa7OnNW5EuC25Ko33hQZAC835crG2CMg0xEyuIkpudKGOyl1Bi6npZAzrbW9A0O3aC39arnPLP3BznzIEUebqZCKx05fkBh5ZCp4IPJ8rovX9WmCNSUPdwZDZD'  # Gere no Gerenciador de Negócios
