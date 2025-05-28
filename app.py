@@ -8,7 +8,8 @@ app = Flask(__name__)
 def redirect_page():
     return redirect('https://techgamesbr.site/products/mini-game-portatil-switch-ps2-psp-nitendo-e-varios-consoles-integrado-ultimas-unidades%F0%9F%94%A5')
 
-
+if __name__ == '__main__':
+    app.run(debug=True)
 
 # ⚙️ Dados do seu Pixel (substitua pelos seus dados)
 PIXEL_ID = '670749832539557'  # Exemplo: '123456789012345'
