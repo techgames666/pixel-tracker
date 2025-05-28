@@ -5,8 +5,9 @@ import time
 app = Flask(__name__)
 
 @app.route('/')
-def home():
-    return '🚀 Seu app está funcionando no Render!'
+def redirect_page():
+    return redirect('https://techgamesbr.site/products/mini-game-portatil-switch-ps2-psp-nitendo-e-varios-consoles-integrado-ultimas-unidades%F0%9F%94%A5')
+
 
 
 # ⚙️ Dados do seu Pixel (substitua pelos seus dados)
