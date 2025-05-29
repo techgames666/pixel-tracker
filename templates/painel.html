@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Painel de Configurações</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 2rem; }
+    .container { background: white; padding: 2rem; border-radius: 8px; max-width: 600px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+    h1 { text-align: center; margin-bottom: 1.5rem; }
+    label { display: block; margin-top: 1rem; font-weight: bold; }
+    input[type=text], textarea { width: 100%; padding: 0.5rem; margin-top: 0.3rem; border: 1px solid #ccc; border-radius: 4px; }
+    button { margin-top: 1.5rem; padding: 0.75rem 1.5rem; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+    .flash-success { background-color: #d4edda; color: #155724; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; border: 1px solid #c3e6cb; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Painel de Configurações</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+      <label for="pixel_id">Pixel ID</label>
+      <input type="text" id="pixel_id" name="pixel_id" value="{{ config['PIXEL_ID'] }}" required />
+
+      <label for="access_token">Access Token</label>
+      <textarea id="access_token" name="access_token" rows="3" required>{{ config['ACCESS_TOKEN'] }}</textarea>
+
+      <label for="destino">URL de Destino</label>
+      <input type="text" id="destino" name="destino" value="{{ config['DESTINO'] }}" required />
+
+      <button type="submit">Salvar Configurações</button>
+    </form>
+  </div>
+</body>
+</html>
