@@ -74,7 +74,7 @@ def rastrear(codigo):
 
 # 🔥 Execução local (Render ignora essa linha)
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
 
 #CÓDIGO DE RASPAGEM E COLETA DE DADOS ABAIXO
 
