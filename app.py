@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import time
 import json
 import os
+
 import json
 
 with open('config.json', 'r') as f:
@@ -131,4 +132,4 @@ def painel():
     return render_template('painel.html', config=config)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
