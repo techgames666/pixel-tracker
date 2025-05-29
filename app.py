@@ -2,46 +2,17 @@ from flask import Flask, request, redirect, jsonify, render_template, flash, url
 import requests
 from bs4 import BeautifulSoup
 import time
-import json
 import os
-
-import json
-
-with open('config.json', 'r') as f:
-    config = json.load(f)
-
-PIXEL_ID = config['pixel_id']
-ACCESS_TOKEN = config['access_token']
-DESTINO = config['destination_url']
-SCRAPER_URL = config['scraper_url']
-BASE_URL = config['base_url']
-
 
 app = Flask(__name__)
 app.secret_key = 'uma_chave_super_secreta_aqui'  # necessário para flash funcionar
 
-CONFIG_FILE = 'config.json'
-
-# Função para carregar config do arquivo JSON
-def carregar_config():
-    if os.path.exists(CONFIG_FILE):
-        with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    else:
-        # Config padrão se arquivo não existir
-        return {
-            'PIXEL_ID': '670749832539557',
-            'ACCESS_TOKEN': 'EAAYzzRkeKZAoBO9OghX47kcCTzBEfu1SQZCIoU3BBxUwZC0MYTeJGVvYlmwXF7bByJX30ZBRgRPSXzSINa7OnNW5EuC25Ko33hQZAC835crG2CMg0xEyuIkpudKGOyl1Bi6npZAzrbW9A0O3aC39arnPLP3BznzIEUebqZCKx05fkBh5ZCp4IPJ8rovX9WmCNSUPdwZDZD',
-            'DESTINO': 'https://techgamesbr.site/products/mini-game-portatil-switch-ps2-psp-nitendo-e-varios-consoles-integrado-ultimas-unidades'
-        }
-
-# Função para salvar config no arquivo JSON
-def salvar_config(config):
-    with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
-        json.dump(config, f, indent=4, ensure_ascii=False)
-
-# Carrega config ao iniciar o app
-config = carregar_config()
+# Configurações via variáveis de ambiente
+config = {
+    'PIXEL_ID': os.getenv('PIXEL_ID', '670749832539557'),
+    'ACCESS_TOKEN': os.getenv('ACCESS_TOKEN', 'EAAYzzRkeKZAoBO9OghX47kcCTzBEfu1SQZCIoU3BBxUwZC0MYTeJGVvYlmwXF7bByJX30ZBRgRPSXzSINa7OnNW5EuC25Ko33hQZAC835crG2CMg0xEyuIkpudKGOyl1Bi6npZAzrbW9A0O3aC39arnPLP3BznzIEUebqZCKx05fkBh5ZCp4IPJ8rovX9WmCNSUPdwZDZD'),
+    'DESTINO': os.getenv('DESTINO', 'https://techgamesbr.site/products/mini-game-portatil-switch-ps2-psp-nitendo-e-varios-consoles-integrado-ultimas-unidades')
+}
 
 def enviar_evento_facebook(codigo, dados_custom):
     url = f'https://graph.facebook.com/v19.0/{config["PIXEL_ID"]}/events'
@@ -65,6 +36,8 @@ def enviar_evento_facebook(codigo, dados_custom):
 
 @app.route('/')
 def home():
+    if not config['DESTINO']:
+        return "URL de destino não configurada", 500
     return redirect(config['DESTINO'])
 
 @app.route('/link/<codigo>')
@@ -80,6 +53,8 @@ def rastrear(codigo):
     else:
         print('Erro ao enviar evento:', response_fb.text)
 
+    if not config['DESTINO']:
+        return "URL de destino não configurada", 500
     return redirect(config['DESTINO'])
 
 @app.route('/raspar', methods=['POST'])
@@ -115,21 +90,17 @@ def raspar_pagina():
     except Exception as e:
         return jsonify({'error': f'Erro ao processar URL: {str(e)}'}), 500
 
-@app.route('/painel', methods=['GET', 'POST'])
+@app.route('/painel', methods=['GET'])
 def painel():
-    global config
-    if request.method == 'POST':
-        # Atualiza e salva config no arquivo
-        config['PIXEL_ID'] = request.form.get('pixel_id', config['PIXEL_ID'])
-        config['ACCESS_TOKEN'] = request.form.get('access_token', config['ACCESS_TOKEN'])
-        config['DESTINO'] = request.form.get('destino', config['DESTINO'])
-
-        salvar_config(config)
-
-        flash('Configurações atualizadas com sucesso!', 'success')
-        return redirect(url_for('painel'))
-
-    return render_template('painel.html', config=config)
+    # Apenas mostra as configs atuais (não salva mais)
+    mensagens = []
+    if not config['PIXEL_ID']:
+        mensagens.append("PIXEL_ID não configurado.")
+    if not config['ACCESS_TOKEN']:
+        mensagens.append("ACCESS_TOKEN não configurado.")
+    if not config['DESTINO']:
+        mensagens.append("DESTINO não configurado.")
+    return render_template('painel.html', config=config, mensagens=mensagens)
 
 if __name__ == '__main__':
     app.run(debug=False)
