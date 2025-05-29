@@ -1,4 +1,5 @@
 from flask import Flask, request, redirect
+from scraper.scraper import raspar_dados
 import requests
 import time
 
@@ -10,6 +11,23 @@ DESTINO = 'https://techgamesbr.site/products/mini-game-portatil-switch-ps2-psp-n
 # 🎯 Dados do Pixel
 PIXEL_ID = '670749832539557'
 ACCESS_TOKEN = 'EAAYzzRkeKZAoBO9OghX47kcCTzBEfu1SQZCIoU3BBxUwZC0MYTeJGVvYlmwXF7bByJX30ZBRgRPSXzSINa7OnNW5EuC25Ko33hQZAC835crG2CMg0xEyuIkpudKGOyl1Bi6npZAzrbW9A0O3aC39arnPLP3BznzIEUebqZCKx05fkBh5ZCp4IPJ8rovX9WmCNSUPdwZDZD'
+
+# 🚀 Rota raspagem - Raspagem bruta
+@app.route('/raspar', methods=['POST'])
+def raspar_pagina():
+    data = request.get_json()
+    url = data.get('url')
+
+    if not url:
+        return {'error': 'URL é obrigatória'}, 400
+
+    resultado = raspar_dados(url)
+
+    if resultado.get('error'):
+        return resultado, 500
+    else:
+        return resultado, 200
+
 
 # 🚀 Rota principal - Redirecionamento simples
 @app.route('/')
