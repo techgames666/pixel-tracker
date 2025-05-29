@@ -5,6 +5,18 @@ import time
 import json
 import os
 
+import json
+
+with open('config.json', 'r') as f:
+    config = json.load(f)
+
+PIXEL_ID = config['pixel_id']
+ACCESS_TOKEN = config['access_token']
+DESTINO = config['destination_url']
+SCRAPER_URL = config['scraper_url']
+BASE_URL = config['base_url']
+
+
 app = Flask(__name__)
 app.secret_key = 'uma_chave_super_secreta_aqui'  # necessário para flash funcionar
 
